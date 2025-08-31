@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const loginError = document.getElementById('loginError');
 
-  // URL base del backend en Railway
+  // URL base del backend en Railwayw
   const API_BASE = 'https://devsky-backend-production.up.railway.app';
 
   loginForm.addEventListener('submit', async (e) => {
