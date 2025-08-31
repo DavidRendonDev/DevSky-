@@ -1,20 +1,19 @@
 // frontend/js/inspector.js
-// Lógica para la vista del inspector: ver tareas y asignar nuevas tareas.
-// Completamente comentado para fácil comprensión.
-
 document.addEventListener('DOMContentLoaded', () => {
   const tareasList = document.getElementById('tareasList');
   const asignarForm = document.getElementById('asignarForm');
   const tecnicoSelect = document.getElementById('tecnico');
   const asignarMsg = document.getElementById('asignarMsg');
 
-  // Cargar técnicos en el selector (solo los que ya tengan tareas asignadas)
+  // URL base del backend en Railway
+  const API_BASE = 'https://devsky-backend-production.up.railway.app';
+
+  // Cargar técnicos en el selector
   async function cargarTecnicos() {
     try {
-      const resp = await fetch('http://localhost:3000/api/tareas');
+      const resp = await fetch(`${API_BASE}/api/tareas`);
       const data = await resp.json();
       if (data && data.success && Array.isArray(data.tareas)) {
-        // Extraer técnicos únicos de las tareas
         const tecnicos = {};
         for (const t of data.tareas || []) {
           if (t.id_tecnico && t.tecnico_nombre) {
@@ -44,10 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
   async function cargarTareas() {
     tareasList.innerHTML = '<div class="cargando">Cargando tareas...</div>';
     try {
-      const resp = await fetch('http://localhost:3000/api/tareas');
+      const resp = await fetch(`${API_BASE}/api/tareas`);
       const data = await resp.json();
       if (data && data.success && Array.isArray(data.tareas)) {
-        if (!data.tareas || (Array.isArray(data.tareas) && data.tareas.length === 0)) {
+        if (data.tareas.length === 0) {
           tareasList.innerHTML = '<div class="vacio">No hay tareas registradas.</div>';
         } else {
           tareasList.innerHTML = '';
@@ -83,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     try {
-      const resp = await fetch('http://localhost:3000/api/tareas', {
+      const resp = await fetch(`${API_BASE}/api/tareas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ descripcion, id_tecnico_asignado })
