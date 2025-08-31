@@ -1,12 +1,12 @@
 
 // frontend/js/tecnico.js
-// Lógica para la vista del técnico: ver y actualizar el estado de sus tareas.
-// Completamente comentado para fácil comprensión.
-
 document.addEventListener('DOMContentLoaded', () => {
   const misTareasList = document.getElementById('misTareasList');
 
-  // Obtener el id del técnico desde sessionStorage (guardado al hacer login)
+  // URL base del backend en Railway
+  const API_BASE = 'https://devsky-backend-production.up.railway.app';
+
+  // Obtener el id del técnico desde sessionStorage
   const tecnicoId = sessionStorage.getItem('tecnicoId');
   if (!tecnicoId) {
     misTareasList.innerHTML = '<div class="error">No se encontró el ID del técnico. Por favor, inicia sesión nuevamente.</div>';
@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
   async function cargarMisTareas() {
     misTareasList.innerHTML = '<div class="cargando">Cargando tus tareas...</div>';
     try {
-      const resp = await fetch(`http://localhost:3000/api/tareas/tecnico/${tecnicoId}`);
+      const resp = await fetch(`${API_BASE}/api/tareas/tecnico/${tecnicoId}`);
       const data = await resp.json();
       if (data && data.success && Array.isArray(data.tareas)) {
-        if (!data.tareas || data.tareas.length === 0) {
+        if (data.tareas.length === 0) {
           misTareasList.innerHTML = '<div class="vacio">No tienes tareas asignadas.</div>';
         } else {
           misTareasList.innerHTML = '';
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', async () => {
               const nuevoEstado = select.value;
               try {
-                const resp = await fetch(`http://localhost:3000/api/tareas/${tarea.id}`, {
+                const resp = await fetch(`${API_BASE}/api/tareas/${tarea.id}`, {
                   method: 'PUT',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({ estado: nuevoEstado })
